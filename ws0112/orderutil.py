@@ -1,5 +1,13 @@
+# 주문 건
+# id, date, userid, itemid, price, qt
+# 날짜 데이터 가져오는 법 연구해보기
+
+# id는 년월일시분초 와 같이 str 구성
+
+
+
 import sqlite3;
-from datetime import datetime
+import datetime
 
 con = None;
 cursor = None;
@@ -12,20 +20,33 @@ def connectDB(dbName):
     print('SQLite connected...');
 
 def makeTable():
-    cursor.execute("""CREATE TABLE IF NOT EXISTS orders(
-    id CHAR(16) primary key, 
-    userid CHAR(16),
-    itemid CHAR(16),
-    price NUMBER(20),
-    qt NUMBER(10),
-    orderdate CHAR(16)
-)""");
-    print('Table Created..')
+    "Make order Table"
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS orders(
+        id CHAR(16) primary key,
+        date CHAR(16),
+        userid CHAR(16),
+        itemid CHAR(16),
+        price NUMBER(10),
+        qt NUMBER(10)
+        )""")
+    con.commit()
+
+#
+# def dateNow2():
+#     now = datetime.datetime.now()
+#     print(now.strftime('%Y-%m-%d'))
+
+def dateNow():
+    t = str(datetime.datetime.now());
+    t = t[:10];
+    t = t.split(sep='-');
+    return t[0]+t[1]+t[2];
 
 def insertOrder(order):
-    "Insert User Data"
-    insetSQL = """Insert into orders values ('%s','%s','%s','%d','%d','%s')""" % \
-               (order[0],order[1],order[2],int(order[3]),int(order[4]),order[5]);
+    "Insert order Data"
+    insetSQL = """Insert into orders values ('%s','%s','%s','%s','%d','%d')""" % \
+               (order[0],dateNow(),order[1],order[2],int(order[3]),int(order[4]));
     cursor.execute(insetSQL);
     con.commit();
 
@@ -33,17 +54,17 @@ def insertOrder(order):
 
 def selectOneOrder(id):
     "Select One order"
-    oneOrder = [];
+    order = [];
     selectOneSQL = """select * from orders where id='%s'""" % (id);
     cursor.execute(selectOneSQL);
     orderData = cursor.fetchone();
-    oneOrder.append(orderData[0]);
-    oneOrder.append(orderData[1]);
-    oneOrder.append(orderData[2]);
-    oneOrder.append(orderData[3]);
-    oneOrder.append(orderData[4]);
-    oneOrder.append(orderData[5]);
-    return oneOrder;
+    order.append(orderData[0]);
+    order.append(orderData[1]);
+    order.append(orderData[2]);
+    order.append(orderData[3]);
+    order.append(orderData[4]);
+    order.append(orderData[5]);
+    return order;
 
 
 
@@ -57,8 +78,8 @@ def deleteOrder(id):
 
 def updateOrder(order):
     "Update One order"
-    updateSQL = """update orders set pwd='%s',name='%s',phone='%s',addr='%s',age=%d where id='%s'""" \
-                % (order[1],order[2],order[3],int(order[4]),int(order[5]),order[0]);
+    updateSQL = """update orders set itemid='%s',price=%d,qt=%d where id='%s'""" \
+                % (order[1],int(order[2]),int(order[3]),order[0]);
     cursor.execute(updateSQL);
     con.commit();
 
