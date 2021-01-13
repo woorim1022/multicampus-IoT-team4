@@ -1,13 +1,6 @@
-# 주문 건
-# id, date, userid, itemid, price, qt
-# 날짜 데이터 가져오는 법 연구해보기
-
-# id는 년월일시분초 와 같이 str 구성
-
-
-
 import sqlite3;
 import datetime
+from orderutil_class import Sql;
 
 con = None;
 cursor = None;
@@ -45,7 +38,7 @@ def dateNow():
 
 def insertOrder(order):
     "Insert order Data"
-    insetSQL = """Insert into orders values ('%s','%s','%s','%s','%d','%d')""" % \
+    insetSQL = Sql.insetSQL % \
                (order[0],dateNow(),order[1],order[2],int(order[3]),int(order[4]));
     cursor.execute(insetSQL);
     con.commit();
@@ -55,7 +48,7 @@ def insertOrder(order):
 def selectOneOrder(id):
     "Select One order"
     order = [];
-    selectOneSQL = """select * from orders where id='%s'""" % (id);
+    selectOneSQL = Sql.selectOrder % (id);
     cursor.execute(selectOneSQL);
     orderData = cursor.fetchone();
     order.append(orderData[0]);
@@ -70,7 +63,7 @@ def selectOneOrder(id):
 
 def deleteOrder(id):
     "Delete One order"
-    deleteSQL = """delete from orders where id='%s'""" % (id);
+    deleteSQL = Sql.deleteOrder % (id);
     cursor.execute(deleteSQL);
     con.commit();
 
@@ -78,7 +71,7 @@ def deleteOrder(id):
 
 def updateOrder(order):
     "Update One order"
-    updateSQL = """update orders set itemid='%s',price=%d,qt=%d where id='%s'""" \
+    updateSQL = Sql.updateOrder \
                 % (order[1],int(order[2]),int(order[3]),order[0]);
     cursor.execute(updateSQL);
     con.commit();
@@ -88,7 +81,7 @@ def updateOrder(order):
 def selectOrder():
     "Select order Data"
     global con, cursor;
-    cursor.execute('select * from orders');
+    cursor.execute();
     allorders = cursor.fetchall();
     return allorders;
 
