@@ -156,9 +156,9 @@ WHERE userid = 'id01';
 
 # 상품 3의 별점 리스트
 # 사용자 아이디, 제품 이름, 별점
-SELECT userid, items.name as itemname, rateNum
+SELECT userid, rateNum
 FROM rate 
 	INNER JOIN items 
 		ON rate.itemid = items.id
-WHERE userid = 'id01';
+WHERE itemid = 3;
 
